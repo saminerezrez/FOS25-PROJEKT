@@ -1,0 +1,41 @@
+
+.btn-secondary{background:#2563eb;color:#fff}
+
+
+.btn,.btn-secondary{
+  min-height:44px;
+  padding:.6rem .9rem;
+}
+
+.btn[disabled],.btn-secondary[disabled]{opacity:.6;cursor:not-allowed}
+
+
+@media (prefers-reduced-motion: reduce){
+  html:focus-within{scroll-behavior:auto}
+  *{animation:none !important;transition:none !important}
+}
+
+.menu{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:1rem;
+}
+@media (min-width: 480px){
+  .menu{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 820px){
+  .menu{ grid-template-columns: repeat(3, 1fr); }
+}
+
+.wrap{max-width:900px;margin:auto;padding:1rem}
+.card{margin:1rem 0;padding:1rem}
+
+.btn:focus-visible,.nav a:focus-visible,.foot a:focus-visible{
+  box-shadow:0 0 0 2px #111,0 0 0 4px #f59e0b;
+}
+
+
+@media (forced-colors: active){
+  .btn,.btn-secondary{border:1px solid ButtonText}
+  .card{border:1px solid CanvasText}
+}

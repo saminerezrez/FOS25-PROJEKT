@@ -1,117 +1,131 @@
 <!doctype html>
-<html lang="EN">
+<html lang="sv">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Café VI BEHÖVER LÄGGA ETT NAMN FÖR VÅRT CAFE</title>
-  <meta name="description" content="Responsiv, tillgänglig demo med formulärvalidering, liten att-göra-lista och väder-API (Open-Meteo) för Stockholm." />
-  <link href="styles.css" rel="stylesheet"/>
+  <title>Café Sol – Tillgänglig demo</title>
+  <meta name="description" content="Responsiv och tillgänglig demo med citat-API, formulärvalidering, att-göra-lista och väder-API." />
 
+ <link href="style.css" rel="stylesheet">
 </head>
 <body>
   <a class="skip-link" href="#main">Hoppa till innehåll</a>
 
-  <header class="site-header">
+  <header class="site-header" role="banner">
     <div class="wrap">
-      <h1 id="site-title">Café VI BEHÖVER LÄGGA ETT NAMN FÖR VÅRT CAFE</h1>
+      <h1 id="site-title">Café Sol (fiktivt)</h1>
       <nav aria-label="Huvudnavigation">
         <ul class="nav" role="list">
           <li><a href="#menu">Meny</a></li>
+          <li><a href="#quote">Dagens citat</a></li>
           <li><a href="#feedback">Feedback</a></li>
           <li><a href="#todo">Att-göra</a></li>
           <li><a href="#weather">Väder</a></li>
+          <li><a href="#map">Karta</a></li>
+
         </ul>
       </nav>
     </div>
   </header>
 
-  <main id="main" class="wrap">
-    <section class="card" id="intro">
-      <h2>Välkommen!</h2>
-      <p>Detta är en <strong>enkel</strong> och <strong>tillgänglig</strong> webbsida byggd med semantisk HTML, responsiv CSS och JavaScript-interaktivitet. BEHÖVER FIXA TEXTEN </p>
+  <main id="main" role="main">
+    <!-- Citat -->
+    <section id="quote" class="main-quote" aria-labelledby="quote-title">
+      <h2 id="quote-title" class="sr-only">Dagens citat</h2>
+      <article class="quote-card">
+        <div class="quote-box" aria-live="polite">
+          <p id="quoteText" class="quote-text">—</p>
+          <p id="quoteAuthor" class="quote-author">~ —</p>
+        </div>
+        <div class="quote-actions">
+          <button id="nextQuote" class="btn" type="button">Nästa citat</button>
+        </div>
+      </article>
     </section>
 
-    <section class="card" id="menu">
-  <h2>Meny</h2>
+    <!-- Meny (tabbar) -->
+    <section class="card" id="menu" aria-labelledby="menu-title">
+      <h2 id="menu-title">Meny</h2>
 
-  <!-- Tabs nav -->
-  <ul class="menu-nav" role="tablist" aria-label="Meny kategorier">
-    <li><button class="menu-nav__link menu-link is-active" role="tab" aria-selected="true" aria-controls="tab-coffee" id="tabbtn-coffee">Kaffe</button></li>
-    <li><button class="menu-nav__link menu-link" role="tab" aria-selected="false" aria-controls="tab-tea" id="tabbtn-tea">Te</button></li>
-    <li><button class="menu-nav__link menu-link" role="tab" aria-selected="false" aria-controls="tab-bakery" id="tabbtn-bakery">Bakverk</button></li>
-  </ul>
+      <ul class="menu-nav" role="tablist" aria-label="Meny kategorier" aria-orientation="horizontal">
+        <li><button class="menu-nav__link is-active" role="tab" aria-selected="true" aria-controls="tab-coffee" id="tabbtn-coffee">Kaffe</button></li>
+        <li><button class="menu-nav__link" role="tab" aria-selected="false" aria-controls="tab-tea" id="tabbtn-tea">Te</button></li>
+        <li><button class="menu-nav__link" role="tab" aria-selected="false" aria-controls="tab-bakery" id="tabbtn-bakery">Bakverk</button></li>
+      </ul>
 
-  <!-- Tabs panels -->
-  <div id="tab-coffee" class="menu-tab" role="tabpanel" aria-labelledby="tabbtn-coffee">
-    <ul class="menu-list" role="list">
-      <li class="menu-list-item">
-        <h3 class="menu-list-item__title">Espresso</h3>
-        <div class="content">
-          <p class="menu-list-item__desc">Stark och aromatisk</p>
-          <span class="menu-list-item__dots"></span>
-          <p class="menu-list-item__price">30 kr</p>
-        </div>
-      </li>
-      <li class="menu-list-item">
-        <h3 class="menu-list-item__title">Cappuccino</h3>
-        <div class="content">
-          <p class="menu-list-item__desc">Skummad mjölk</p>
-          <span class="menu-list-item__dots"></span>
-          <p class="menu-list-item__price">35 kr</p>
-        </div>
-      </li>
-    </ul>
-  </div>
+      <div id="tab-coffee" class="menu-tab" role="tabpanel" aria-labelledby="tabbtn-coffee">
+        <ul class="menu-list" role="list">
+          <li class="menu-list-item">
+            <h3 class="menu-list-item__title">Espresso</h3>
+            <div class="content">
+              <p class="menu-list-item__desc">Stark och aromatisk</p>
+              <span class="menu-list-item__dots"></span>
+              <p class="menu-list-item__price">30 kr</p>
+            </div>
+          </li>
+          <li class="menu-list-item">
+            <h3 class="menu-list-item__title">Cappuccino</h3>
+            <div class="content">
+              <p class="menu-list-item__desc">Skummad mjölk</p>
+              <span class="menu-list-item__dots"></span>
+              <p class="menu-list-item__price">35 kr</p>
+            </div>
+          </li>
+        </ul>
+      </div>
 
-  <div id="tab-tea" class="menu-tab" role="tabpanel" aria-labelledby="tabbtn-tea" hidden>
-    <ul class="menu-list" role="list">
-      <li class="menu-list-item">
-        <h3 class="menu-list-item__title">Grönt te</h3>
-        <div class="content">
-          <p class="menu-list-item__desc">Lätt och friskt</p>
-          <span class="menu-list-item__dots"></span>
-          <p class="menu-list-item__price">25 kr</p>
-        </div>
-      </li>
-    </ul>
-  </div>
+      <div id="tab-tea" class="menu-tab" role="tabpanel" aria-labelledby="tabbtn-tea" hidden>
+        <ul class="menu-list" role="list">
+          <li class="menu-list-item">
+            <h3 class="menu-list-item__title">Grönt te</h3>
+            <div class="content">
+              <p class="menu-list-item__desc">Lätt och friskt</p>
+              <span class="menu-list-item__dots"></span>
+              <p class="menu-list-item__price">25 kr</p>
+            </div>
+          </li>
+        </ul>
+      </div>
 
-  <div id="tab-bakery" class="menu-tab" role="tabpanel" aria-labelledby="tabbtn-bakery" hidden>
-    <ul class="menu-list" role="list">
-      <li class="menu-list-item">
-        <h3 class="menu-list-item__title">Kanelbulle</h3>
-        <div class="content">
-          <p class="menu-list-item__desc">Nygräddad</p>
-          <span class="menu-list-item__dots"></span>
-          <p class="menu-list-item__price">28 kr</p>
-        </div>
-      </li>
-    </ul>
-  </div>
+      <div id="tab-bakery" class="menu-tab" role="tabpanel" aria-labelledby="tabbtn-bakery" hidden>
+        <ul class="menu-list" role="list">
+          <li class="menu-list-item">
+            <h3 class="menu-list-item__title">Kanelbulle</h3>
+            <div class="content">
+              <p class="menu-list-item__desc">Nygräddad</p>
+              <span class="menu-list-item__dots"></span>
+              <p class="menu-list-item__price">28 kr</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Feedback -->
+<section id="feedback" class="card">
+  <h2>Feedback</h2>
+
+  <form id="fbForm">
+    <label>
+      Namn:
+      <input id="fbName" type="text" placeholder="Skriv ditt namn" required>
+    </label><br><br>
+
+    <label>
+      Meddelande:
+      <textarea id="fbMsg" rows="3" placeholder="Skriv ett meddelande" required></textarea>
+    </label><br><br>
+
+    <button type="submit" class="btn">Skicka</button>
+  </form>
+
+  <h3>Kommentarer:</h3>
+  <ul id="fbList" class="fb-list"></ul>
 </section>
 
-    <!-- Feedback-formulär med enkel validering -->
-    <section class="card" id="feedback" aria-labelledby="feedback-title">
-      <h2 id="feedback-title">Feedback</h2>
-      <form id="fbForm" novalidate>
-        <div class="field">
-          <label for="fbName">Namn *</label>
-          <input id="fbName" name="name" type="text" required aria-describedby="fbNameHelp" />
-          <div id="fbNameHelp" class="help">Minst 2 tecken.</div>
-          <div class="error" aria-live="polite"></div>
-        </div>
-        <div class="field">
-          <label for="fbMsg">Meddelande *</label>
-          <textarea id="fbMsg" name="message" rows="3" required aria-describedby="fbMsgHelp"></textarea>
-          <div id="fbMsgHelp" class="help">Minst 5 tecken.</div>
-          <div class="error" aria-live="polite"></div>
-        </div>
-        <button class="btn" type="submit">Skicka</button>
-        <p id="fbStatus" class="sr-only" aria-live="polite"></p>
-      </form>
     </section>
 
-    <!-- To-do lista (localStorage) -->
+    <!-- To-do (localStorage) -->
     <section class="card" id="todo" aria-labelledby="todo-title">
       <h2 id="todo-title">Att-göra för idag</h2>
       <div class="todo-controls">
@@ -123,13 +137,40 @@
       <button id="todoClear" class="btn btn-secondary" type="button">Rensa klara</button>
     </section>
 
-    <!-- Väder API (Open-Meteo) -->
+    <!-- Väder (Open-Meteo) -->
     <section class="card" id="weather" aria-labelledby="weather-title">
       <h2 id="weather-title">Väder – Stockholm</h2>
       <p>Hämtar aktuell temperatur via en <em>öppen datakälla</em> (Open-Meteo).</p>
       <button id="loadWeather" class="btn" type="button">Hämta väder</button>
-      <output id="weatherOut" aria-live="polite"></output>
+      <output id="weatherOut" aria-live="polite" role="status"></output>
     </section>
+
+    <!-- Karta (Google Maps ) -->
+<section class="card" id="map" aria-labelledby="map-title">
+  <h2 id="map-title">Hitta till Café Sol</h2>
+  <p>
+    Adress: Koggbron (Harbor) 114 56 Stockholm.
+    <a class="map-link"
+       href="https://www.google.com/maps/search/?api=1&query=59.331312,18.0831217"
+       target="_blank" rel="noopener">Öppna i Google Maps</a>
+  </p>
+
+  <div class="map-wrap">
+    <iframe
+  class="map-iframe"
+  title="Karta som visar Café Sol i Stockholm"
+  loading="lazy"
+  src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d8386.909873613315!2d18.0686!3d59.3293!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ssv!2sse!4v1693934519937!5m2!1ssv!2sse"
+  allowfullscreen>
+</iframe>
+
+  </div>
+
+  <p class="sr-only">
+    Om kartan inte läses upp korrekt av din skärmläsare, använd länken “Öppna i Google Maps”.
+  </p>
+</section>
+
   </main>
 
   <footer class="site-footer">
@@ -137,14 +178,13 @@
       <p>&copy; <span id="year"></span> Café Sol (fiktivt).</p>
       <nav aria-label="Sidfotslänkar">
         <ul class="foot" role="list">
-          <li><a href="#feedback">Kontakta oss</a></li>
-          <li><a href="#">Sekretess</a></li>
+          <li><a href="#feedback">Kontakta oss (feedback)</a></li>
+          <li><a href="#">Sekretesspolicy</a></li>
         </ul>
       </nav>
     </div>
   </footer>
 
-  
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>

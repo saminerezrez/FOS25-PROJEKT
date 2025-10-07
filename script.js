@@ -1,46 +1,70 @@
-// --- Helpers ---
-const qs  = (s, root=document) => root.querySelector(s);
-const qsa = (s, root=document) => [...root.querySelectorAll(s)];
+// ===== Helpers =====
+const qs  = (s, root = document) => root.querySelector(s);
+const qsa = (s, root = document) => [...root.querySelectorAll(s)];
 
-// Year in footer
-qs('#year').textContent = new Date().getFullYear();
+// År i footer
+const yr = document.getElementById('year');
+if (yr) yr.textContent = new Date().getFullYear();
 
-/* -----------------------------
-   Feedback validation (safe)
-------------------------------*/
-(function feedback(){
-  const form   = qs('#fbForm');
-  if(!form) return;
-  const nameEl = qs('#fbName');
-  const msgEl  = qs('#fbMsg');
-  const status = qs('#fbStatus');
+// ===== Quotes (20 random) =====
+const text = document.querySelector('#quoteText');
+const author = document.querySelector('#quoteAuthor');
+const btn = document.querySelector('#nextQuote');
 
-  const setErr = (el, msg='')=>{
-    const err = el.closest('.field')?.querySelector('.error');
-    if(err) err.textContent = msg;
-  };
+let quotes = [];  
 
-  form.addEventListener('submit', e=>{
-    e.preventDefault();
-    let ok = true;
+function loadQuotes() {
+  fetch('https://dummyjson.com/quotes?limit=20')
+    .then(res => res.json())
+    .then(data => {
+      quotes = data.quotes;
+      showQuote();
+    })
+    .catch(() => {
+      text.textContent = "Kunde inte hämta citat.";
+      author.textContent = "";
+    });
+}
 
-    const name = (nameEl.value||'').trim();
-    const msg  = (msgEl.value||'').trim();
+function showQuote() {
+  if (quotes.length === 0) return;
+  const q = quotes[Math.floor(Math.random() * quotes.length)];
+  text.textContent = q.quote;
+  author.textContent = `~ ${q.author}`;
+}
 
-    if(name.length < 2){ setErr(nameEl, 'Minst 2 tecken.'); ok = false; } else setErr(nameEl,'');
-    if(msg.length  < 5){ setErr(msgEl,  'Minst 5 tecken.'); ok = false; } else setErr(msgEl,'');
+btn.addEventListener('click', showQuote);
+loadQuotes();
 
-    status.textContent = ok ? 'Tack för din feedback!' : 'Formuläret innehåller fel.';
-    if(ok){
-      form.reset();
-      setErr(nameEl,''); setErr(msgEl,'');
-    }
-  });
-})();
 
-/* -----------------------------
-   Tiny To-Do (localStorage)
-------------------------------*/
+// ===== Feedback =====
+const form = document.querySelector('#fbForm');
+const nameIn = document.querySelector('#fbName');
+const msgIn = document.querySelector('#fbMsg');
+const list = document.querySelector('#fbList');
+let feedback = JSON.parse(localStorage.getItem('feedback') || '[]');
+
+function showFeedback() {
+  list.innerHTML = feedback.map(f => `<li><b>${f.name}</b>: ${f.message}</li>`).join('');
+}
+showFeedback();
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const name = nameIn.value.trim();
+  const msg  = msgIn.value.trim();
+  if (name.length < 2 || msg.length < 2) return alert('Skriv något längre!');
+  feedback.push({ name, message: msg });
+  localStorage.setItem('feedback', JSON.stringify(feedback));
+  showFeedback();
+  form.reset();
+});
+
+
+
+/* =============================
+   To-Do (localStorage)
+============================= */
 (function todo(){
   const input = qs('#todoInput'), add = qs('#todoAdd'), list = qs('#todoList'), clear = qs('#todoClear');
   if(!input || !add || !list) return;
@@ -58,6 +82,10 @@ qs('#year').textContent = new Date().getFullYear();
       const span = document.createElement('span');
       span.textContent = it.text;
 
+      const grp = document.createElement('div');
+      grp.style.display = 'flex';
+      grp.style.gap = '.5rem';
+
       const toggle = document.createElement('button');
       toggle.className = 'btn';
       toggle.type = 'button';
@@ -74,7 +102,8 @@ qs('#year').textContent = new Date().getFullYear();
         items.splice(i,1); save(); render();
       });
 
-      li.append(span, toggle, del);
+      grp.append(toggle, del);
+      li.append(span, grp);
       list.appendChild(li);
     });
   };
@@ -89,44 +118,66 @@ qs('#year').textContent = new Date().getFullYear();
 
   add.addEventListener('click', addItem);
   input.addEventListener('keydown', e => { if(e.key === 'Enter') addItem(); });
-  clear.addEventListener('click', () => { items = items.filter(i => !i.done); save(); render(); });
+  if (clear) clear.addEventListener('click', () => { items = items.filter(i => !i.done); save(); render(); });
 
   render();
 })();
 
-/* -----------------------------
-   Weather API (Open-Meteo)
-   Stockholm lat/lon + timezone
-------------------------------*/
-(function weather(){
-  const btn = qs('#loadWeather'), out = qs('#weatherOut');
-  if(!btn || !out) return;
+// ===== Weather =====
+const btnWeather = document.querySelector('#loadWeather');
+const outWeather = document.querySelector('#weatherOut');
 
-  const url = 'https://api.open-meteo.com/v1/forecast'
-    + '?latitude=59.3293&longitude=18.0686'
-    + '&current=temperature_2m,wind_speed_10m'
-    + '&timezone=auto';
+btnWeather.addEventListener('click', () => {
+  outWeather.textContent = "Hämtar väder...";
 
-  btn.addEventListener('click', async () => {
-    try {
-      btn.disabled = true; btn.textContent = 'Hämtar…'; out.textContent = '';
-      const res = await fetch(url, { cache: 'no-store' });
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=59.3293&longitude=18.0686&current=temperature_2m,wind_speed_10m&timezone=auto")
+    .then(res => res.json())
+    .then(data => {
+      const temp = data.current.temperature_2m;
+      const wind = data.current.wind_speed_10m;
+      outWeather.textContent = `Just nu: ${temp} °C, vind ${wind} m/s`;
+    })
+    .catch(() => {
+      outWeather.textContent = "Kunde inte hämta väder just nu.";
+    });
+});
 
-      const t = data?.current?.temperature_2m;
-      const w = data?.current?.wind_speed_10m;
+/* =============================
+   Tabs
+============= */
+(function tabs(){
+  const tabs = qsa('.menu-nav__link');
+  const byId = id => document.getElementById(id);
+  if(!tabs.length) return;
 
-      if (typeof t === 'number') {
-        out.textContent = `Just nu: ${t} °C, vind ${w ?? '—'} m/s.`;
-      } else {
-        out.textContent = 'Kunde inte läsa temperatur just nu.';
-      }
-    } catch (e) {
-      out.textContent = 'Fel: kunde inte hämta väder.';
-      console.error('Weather error:', e);
-    } finally {
-      btn.disabled = false; btn.textContent = 'Hämta väder';
-    }
+  const KEY = 'cafe.activeTab';
+
+  function activate(btn) {
+    tabs.forEach(t => {
+      const selected = (t === btn);
+      t.setAttribute('aria-selected', String(selected));
+      t.classList.toggle('is-active', selected);
+      const panel = byId(t.getAttribute('aria-controls'));
+      if (panel) panel.hidden = !selected;
+    });
+    localStorage.setItem(KEY, btn.id);
+    btn.focus();
+  }
+
+  tabs.forEach(t => {
+    t.addEventListener('click', () => activate(t));
+    t.addEventListener('keydown', (e) => {
+      const i = tabs.findIndex(x => x === t);
+      let target;
+      if (e.key === 'ArrowRight')      target = tabs[(i + 1) % tabs.length];
+      else if (e.key === 'ArrowLeft')  target = tabs[(i - 1 + tabs.length) % tabs.length];
+      else if (e.key === 'Home')       target = tabs[0];
+      else if (e.key === 'End')        target = tabs[tabs.length - 1];
+      if (target) { e.preventDefault(); activate(target); }
+    });
   });
+
+  const saved = localStorage.getItem(KEY);
+  const initial = saved ? byId(saved) : tabs[0];
+  if (initial) activate(initial);
 })();

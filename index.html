@@ -3,32 +3,91 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Café Sol – Tillgänglig demo</title>
+  <title>Café Ljus</title>
   <meta name="description" content="Responsiv och tillgänglig demo med citat-API, formulärvalidering, att-göra-lista och väder-API." />
 
  <link href="style.css" rel="stylesheet">
 </head>
 <body>
+
   <a class="skip-link" href="#main">Hoppa till innehåll</a>
 
   <header class="site-header" role="banner">
     <div class="wrap">
-      <h1 id="site-title">Café Sol (fiktivt)</h1>
+      <h1 id="site-title">Café Ljus</h1>
       <nav aria-label="Huvudnavigation">
         <ul class="nav" role="list">
+
+          <li><a href="#About">Om Oss</a></li>
           <li><a href="#menu">Meny</a></li>
           <li><a href="#quote">Dagens citat</a></li>
           <li><a href="#feedback">Feedback</a></li>
           <li><a href="#todo">Att-göra</a></li>
           <li><a href="#weather">Väder</a></li>
           <li><a href="#map">Karta</a></li>
+          <li><a href="#boking">Boka</a></li>
 
         </ul>
       </nav>
     </div>
   </header>
 
+  <div class="search_wrapper">
+   <label for="search"> Sök </label>
+   <input type="search" id="search">  
+  </div>
+
+<!-- about section -->
+ <section class="about-section">
+  <div class="section-content">
+  <div class="about-image-wrapper">
+  <img src="C:\Users\huawei\Downloads\ChatGPT Image Oct 7, 2025, 11_09_18 AM.png" alt="about" 
+  class= "about-image"> 
+  </div>
+  <div class="about-details">
+    <h2 class="section-title"> Om oss</h2>
+    <p class="text">Café Ljus är ett litet, mysigt kafé mitt i Stockholm. Vi vill skapa en varm och avslappnad atmosfär där våra gäster kan njuta av färskt kaffe, hembakat fika och trevlig service.</p>
+
+    </div>
+
+  </div>
+ </section>
+
+</section>
+
   <main id="main" role="main">
+    <section id="booking" class="b-card">
+  <h2>Boka bord </h2>
+
+  <form id="bForm" class="b-form">
+    <input id="bDate"  type="date" required>
+    <select id="bTime" required>
+      <option value="" selected disabled>Välj tid</option>
+      <option>09:00</option>
+      <option>10:30</option>
+      <option>12:00</option>
+      <option>13:30</option>
+      <option>15:00</option>
+      <option>16:30</option>
+      <option>18:00</option>
+      <option>19:30</option>
+    </select>
+
+    <input id="bName"  type="text" placeholder="Namn"   required>
+    <input id="bPhone" type="tel"  placeholder="Telefon" required>
+    <input id="bParty" type="number" min="1" max="12" value="2" required>
+    <input id="bEmail" type="email" placeholder="E-post" required>
+
+    <button class="b-btn b-primary" type="submit">Boka</button>
+    <div id="bMsg" class="b-msg"></div>
+  </form>
+
+  <h3 class="b-h3">Bokningar för vald dag</h3>
+  <ul id="bList" class="b-list"></ul>
+</section>
+
+</section>
+
     <!-- Citat -->
     <section id="quote" class="main-quote" aria-labelledby="quote-title">
       <h2 id="quote-title" class="sr-only">Dagens citat</h2>
@@ -125,17 +184,6 @@
 
     </section>
 
-    <!-- To-do (localStorage) -->
-    <section class="card" id="todo" aria-labelledby="todo-title">
-      <h2 id="todo-title">Att-göra för idag</h2>
-      <div class="todo-controls">
-        <label class="sr-only" for="todoInput">Ny uppgift</label>
-        <input id="todoInput" type="text" placeholder="Skriv en uppgift…" />
-        <button id="todoAdd" class="btn" type="button">Lägg till</button>
-      </div>
-      <ul id="todoList" class="todo-list" role="list"></ul>
-      <button id="todoClear" class="btn btn-secondary" type="button">Rensa klara</button>
-    </section>
 
     <!-- Väder (Open-Meteo) -->
     <section class="card" id="weather" aria-labelledby="weather-title">

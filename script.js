@@ -6,6 +6,86 @@ const qsa = (s, root = document) => [...root.querySelectorAll(s)];
 const yr = document.getElementById('year');
 if (yr) yr.textContent = new Date().getFullYear();
 
+
+function $(sel) {
+  return document.querySelector(sel);
+}
+
+const storeKey = 'cafe.booking.simple';
+
+function load() {
+  const saved = localStorage.getItem(storeKey);
+  if (saved) {
+    return JSON.parse(saved);
+  } else {
+    return [];
+  }
+}
+
+function save(list) {
+  localStorage.setItem(storeKey, JSON.stringify(list));
+}
+
+function showList(day) {
+  const ul = document.getElementById('bList');
+  ul.innerHTML = '';
+  if (!day) return;
+
+  const all = load();
+  for (let i = 0; i < all.length; i++) {
+    const b = all[i];
+    if (b.date === day) {
+      const li = document.createElement('li');
+      li.textContent =
+        b.time + ' — ' + b.name + ' (' + b.party + ') ' + b.phone + ' | ' + b.email;
+      ul.appendChild(li);
+    }
+  }
+}
+
+document.getElementById('bDate').addEventListener('change', function (e) {
+  showList(e.target.value);
+});
+
+document.getElementById('bForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  const date = $('#bDate').value;
+  const time = $('#bTime').value;
+  const name = $('#bName').value.trim();
+  const phone = $('#bPhone').value.trim();
+  const email = $('#bEmail').value.trim();
+  const party = parseInt($('#bParty').value) || 1;
+
+  if (!date || !time || !name || !phone || !email) {
+    alert('Fyll i alla fält.');  
+    return;
+  }
+
+  const all = load();
+  all.push({
+    date: date,
+    time: time,
+    name: name,
+    phone: phone,
+    email: email,
+    party: party,
+    createdAt: Date.now()
+  });
+
+  save(all);
+  showList(date);
+  e.target.reset();
+  $('#bDate').value = date;
+});
+
+window.addEventListener('load', function () {
+  const today = new Date().toISOString().slice(0, 10);
+  $('#bDate').value = today;
+  showList(today);
+});
+
+
 // ===== Quotes (20 random) =====
 const text = document.querySelector('#quoteText');
 const author = document.querySelector('#quoteAuthor');
@@ -60,68 +140,6 @@ form.addEventListener('submit', e => {
   form.reset();
 });
 
-
-
-/* =============================
-   To-Do (localStorage)
-============================= */
-(function todo(){
-  const input = qs('#todoInput'), add = qs('#todoAdd'), list = qs('#todoList'), clear = qs('#todoClear');
-  if(!input || !add || !list) return;
-
-  const KEY = 'cafe.todo.v1';
-  let items = JSON.parse(localStorage.getItem(KEY) || '[]');
-
-  const save = () => localStorage.setItem(KEY, JSON.stringify(items));
-
-  const render = () => {
-    list.innerHTML = '';
-    items.forEach((it, i) => {
-      const li = document.createElement('li');
-      li.className = 'todo-item' + (it.done ? ' done' : '');
-      const span = document.createElement('span');
-      span.textContent = it.text;
-
-      const grp = document.createElement('div');
-      grp.style.display = 'flex';
-      grp.style.gap = '.5rem';
-
-      const toggle = document.createElement('button');
-      toggle.className = 'btn';
-      toggle.type = 'button';
-      toggle.textContent = it.done ? 'Återställ' : 'Klar';
-      toggle.addEventListener('click', () => {
-        items[i].done = !items[i].done; save(); render();
-      });
-
-      const del = document.createElement('button');
-      del.className = 'btn btn-secondary';
-      del.type = 'button';
-      del.textContent = 'Ta bort';
-      del.addEventListener('click', () => {
-        items.splice(i,1); save(); render();
-      });
-
-      grp.append(toggle, del);
-      li.append(span, grp);
-      list.appendChild(li);
-    });
-  };
-
-  const addItem = () => {
-    const t = (input.value || '').trim();
-    if(!t) return;
-    items.push({ text: t, done: false });
-    input.value = '';
-    save(); render(); input.focus();
-  };
-
-  add.addEventListener('click', addItem);
-  input.addEventListener('keydown', e => { if(e.key === 'Enter') addItem(); });
-  if (clear) clear.addEventListener('click', () => { items = items.filter(i => !i.done); save(); render(); });
-
-  render();
-})();
 
 // ===== Weather =====
 const btnWeather = document.querySelector('#loadWeather');

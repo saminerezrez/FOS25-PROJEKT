@@ -4,112 +4,96 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Café Ljus</title>
-  <meta name="description" content="Responsiv och tillgänglig demo med citat-API, formulärvalidering, att-göra-lista och väder-API." />
-
- <link href="style.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet" />
 </head>
 <body>
 
-  <a class="skip-link" href="#main">Hoppa till innehåll</a>
+   <!-- ===== skip link Tab Accessibility ===== -->
+    <a class="skip-link" href="#main">Hoppa till innehåll</a>
 
+  <!-- ===== lagt Header ===== -->
   <header class="site-header" role="banner">
+  
+    <!-- ===== hålla allt snygg ===== -->
     <div class="wrap">
       <h1 id="site-title">Café Ljus</h1>
-      <nav aria-label="Huvudnavigation">
         <ul class="nav" role="list">
-
-          <li><a href="#About">Om Oss</a></li>
+          <li><a href="#about">Om oss</a></li>
           <li><a href="#menu">Meny</a></li>
-          <li><a href="#quote">Dagens citat</a></li>
+          <li><a href="#booking">Boka</a></li>
           <li><a href="#feedback">Feedback</a></li>
-          <li><a href="#todo">Att-göra</a></li>
           <li><a href="#weather">Väder</a></li>
+          <li><a href="#contact">Kontakta oss</a></li>
           <li><a href="#map">Karta</a></li>
-          <li><a href="#boking">Boka</a></li>
-
         </ul>
       </nav>
     </div>
   </header>
 
-  <div class="search_wrapper">
-   <label for="search"> Sök </label>
-   <input type="search" id="search">  
-  </div>
-
-<!-- about section -->
- <section class="about-section">
-  <div class="section-content">
-  <div class="about-image-wrapper">
-  <img src="C:\Users\huawei\Downloads\ChatGPT Image Oct 7, 2025, 11_09_18 AM.png" alt="about" 
-  class= "about-image"> 
-  </div>
-  <div class="about-details">
-    <h2 class="section-title"> Om oss</h2>
-    <p class="text">Café Ljus är ett litet, mysigt kafé mitt i Stockholm. Vi vill skapa en varm och avslappnad atmosfär där våra gäster kan njuta av färskt kaffe, hembakat fika och trevlig service.</p>
-
-    </div>
-
-  </div>
- </section>
-
-</section>
-
-  <main id="main" role="main">
-    <section id="booking" class="b-card">
-  <h2>Boka bord </h2>
-
-  <form id="bForm" class="b-form">
-    <input id="bDate"  type="date" required>
-    <select id="bTime" required>
-      <option value="" selected disabled>Välj tid</option>
-      <option>09:00</option>
-      <option>10:30</option>
-      <option>12:00</option>
-      <option>13:30</option>
-      <option>15:00</option>
-      <option>16:30</option>
-      <option>18:00</option>
-      <option>19:30</option>
-    </select>
-
-    <input id="bName"  type="text" placeholder="Namn"   required>
-    <input id="bPhone" type="tel"  placeholder="Telefon" required>
-    <input id="bParty" type="number" min="1" max="12" value="2" required>
-    <input id="bEmail" type="email" placeholder="E-post" required>
-
-    <button class="b-btn b-primary" type="submit">Boka</button>
-    <div id="bMsg" class="b-msg"></div>
-  </form>
-
-  <h3 class="b-h3">Bokningar för vald dag</h3>
-  <ul id="bList" class="b-list"></ul>
-</section>
-
-</section>
-
-    <!-- Citat -->
-    <section id="quote" class="main-quote" aria-labelledby="quote-title">
-      <h2 id="quote-title" class="sr-only">Dagens citat</h2>
-      <article class="quote-card">
-        <div class="quote-box" aria-live="polite">
-          <p id="quoteText" class="quote-text">—</p>
-          <p id="quoteAuthor" class="quote-author">~ —</p>
+    <!-- === About === -->
+    <section class="about-section" id="about">
+      <div class="section-content">
+        <div class="about-image-wrapper">
+          <video class="about-video" autoplay muted loop playsinline >
+            <source src="https://cdn.pixabay.com/video/2020/07/23/45358-443057031_large.mp4" type="video/mp4">
+          </video>
         </div>
-        <div class="quote-actions">
-          <button id="nextQuote" class="btn" type="button">Nästa citat</button>
+        <div class="about-details">
+          <h2 class="section-title">Om oss</h2>
+          <p>Café Ljus är ett mysigt kafé mitt i Stockholm. Vi erbjuder nybryggt kaffe, hembakat fika och en varm atmosfär där alla är välkomna.</p>
         </div>
-      </article>
+      </div>
     </section>
 
-    <!-- Meny (tabbar) -->
+    <!-- === Booking === -->
+    <section id="booking" class="b-card">
+      <h2>Boka bord</h2>
+
+      <form id="bForm" class="b-form" novalidate>
+        <label for="bDate">Datum</label>
+        <input id="bDate" type="date" required />
+
+        <label for="bTime">Tid</label>
+        <select id="bTime" required>
+          <option value="" selected disabled>Välj tid</option>
+          <option>09:00</option>
+          <option>10:30</option>
+          <option>12:00</option>
+          <option>13:30</option>
+          <option>15:00</option>
+          <option>16:30</option>
+          <option>18:00</option>
+          <option>19:30</option>
+        </select>
+
+        <label for="bName">Namn</label>
+        <input id="bName" type="text" placeholder="Namn" required autocomplete="name" />
+
+        <label for="bPhone">Telefon</label>
+        <input id="bPhone" type="tel" placeholder="Telefon" required inputmode="tel" autocomplete="tel" />
+
+        <label for="bParty">Antal personer</label>
+        <input id="bParty" type="number" min="1" max="12" value="2" required />
+
+        <label for="bEmail">E-post</label>
+        <input id="bEmail" type="email" placeholder="E-post" required autocomplete="email" />
+
+        <button class="b-btn b-primary" type="submit">Boka</button>
+        <div id="bMsg" class="b-msg" aria-live="polite"></div>
+      </form>
+
+      <h3 class="b-h3">Bokningar för vald dag</h3>
+      <ul id="bList" class="b-list"></ul>
+    </section>
+
+    <!-- === Meny (Tabs) === -->
     <section class="card" id="menu" aria-labelledby="menu-title">
       <h2 id="menu-title">Meny</h2>
 
-      <ul class="menu-nav" role="tablist" aria-label="Meny kategorier" aria-orientation="horizontal">
-        <li><button class="menu-nav__link is-active" role="tab" aria-selected="true" aria-controls="tab-coffee" id="tabbtn-coffee">Kaffe</button></li>
-        <li><button class="menu-nav__link" role="tab" aria-selected="false" aria-controls="tab-tea" id="tabbtn-tea">Te</button></li>
-        <li><button class="menu-nav__link" role="tab" aria-selected="false" aria-controls="tab-bakery" id="tabbtn-bakery">Bakverk</button></li>
+      <ul class="menu-nav" role="tablist" aria-label="Meny kategorier">
+        <li><button class="menu-nav__link menu-link is-active" role="tab" aria-selected="true" aria-controls="tab-coffee" id="tabbtn-coffee">Kaffe</button></li>
+        <li><button class="menu-nav__link menu-link" role="tab" aria-selected="false" aria-controls="tab-tea" id="tabbtn-tea">Te</button></li>
+        <li><button class="menu-nav__link menu-link" role="tab" aria-selected="false" aria-controls="tab-bakery" id="tabbtn-bakery">Bakverk</button></li>
       </ul>
 
       <div id="tab-coffee" class="menu-tab" role="tabpanel" aria-labelledby="tabbtn-coffee">
@@ -160,76 +144,80 @@
       </div>
     </section>
 
-    <!-- Feedback -->
-<section id="feedback" class="card">
-  <h2>Feedback</h2>
+    <!-- === Feedback === -->
+    <section id="feedback" class="card">
+      <h2>Feedback</h2>
+      <form id="fbForm">
+        <label for="fbName">Namn</label>
+        <input id="fbName" type="text" placeholder="Skriv ditt namn" required />
 
-  <form id="fbForm">
-    <label>
-      Namn:
-      <input id="fbName" type="text" placeholder="Skriv ditt namn" required>
-    </label><br><br>
+        <label for="fbMsg">Meddelande</label>
+        <textarea id="fbMsg" rows="3" placeholder="Skriv ett meddelande" required></textarea>
 
-    <label>
-      Meddelande:
-      <textarea id="fbMsg" rows="3" placeholder="Skriv ett meddelande" required></textarea>
-    </label><br><br>
+        <button type="submit" class="btn">Skicka</button>
+      </form>
 
-    <button type="submit" class="btn">Skicka</button>
-  </form>
-
-  <h3>Kommentarer:</h3>
-  <ul id="fbList" class="fb-list"></ul>
-</section>
-
+      <h3>Kommentarer</h3>
+      <ul id="fbList" class="fb-list"></ul>
     </section>
 
-
-    <!-- Väder (Open-Meteo) -->
+    <!-- === Weather === -->
     <section class="card" id="weather" aria-labelledby="weather-title">
       <h2 id="weather-title">Väder – Stockholm</h2>
-      <p>Hämtar aktuell temperatur via en <em>öppen datakälla</em> (Open-Meteo).</p>
+      <p>Hämtar aktuell temperatur via en öppen datakälla (Open-Meteo).</p>
       <button id="loadWeather" class="btn" type="button">Hämta väder</button>
       <output id="weatherOut" aria-live="polite" role="status"></output>
     </section>
 
-    <!-- Karta (Google Maps ) -->
-<section class="card" id="map" aria-labelledby="map-title">
-  <h2 id="map-title">Hitta till Café Sol</h2>
-  <p>
-    Adress: Koggbron (Harbor) 114 56 Stockholm.
-    <a class="map-link"
-       href="https://www.google.com/maps/search/?api=1&query=59.331312,18.0831217"
-       target="_blank" rel="noopener">Öppna i Google Maps</a>
-  </p>
+    <!-- === Contact === -->
+    <section id="contact">
+      <h2>Kontakta oss</h2>
+      <form id="contactForm" action="#" method="post">
+        <label for="fname">Förnamn</label>
+        <input type="text" id="fname" name="fname" placeholder="Skriv ditt förnamn" autocomplete="given-name" />
 
-  <div class="map-wrap">
-    <iframe
-  class="map-iframe"
-  title="Karta som visar Café Sol i Stockholm"
-  loading="lazy"
-  src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d8386.909873613315!2d18.0686!3d59.3293!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ssv!2sse!4v1693934519937!5m2!1ssv!2sse"
-  allowfullscreen>
-</iframe>
+        <label for="lname">Efternamn</label>
+        <input type="text" id="lname" name="lname" placeholder="Skriv ditt efternamn" autocomplete="family-name" />
 
-  </div>
+        <label for="email">E-post</label>
+        <input type="email" id="email" name="email" placeholder="E-postadress" autocomplete="email" />
 
-  <p class="sr-only">
-    Om kartan inte läses upp korrekt av din skärmläsare, använd länken “Öppna i Google Maps”.
-  </p>
-</section>
+        <label for="feedbackMsg">Meddelande</label>
+        <textarea id="feedbackMsg" name="feedbackMsg" rows="4" placeholder="Skriv ditt meddelande här..."></textarea>
+
+        <button type="submit" id="button">Skicka</button>
+      </form>
+    </section>
+
+    <!-- === Map === -->
+    <section class="card" id="map" aria-labelledby="map-title">
+      <h2 id="map-title">Hitta till Café Ljus</h2>
+      <p>
+        Adress: Koggbron, 114 56 Stockholm –
+        <a href="https://www.google.com/maps/search/?api=1&query=59.331312,18.0831217" target="_blank" rel="noopener noreferrer">Öppna i Google Maps</a>
+      </p>
+      <div class="map-wrap">
+        <iframe
+          class="map-embed"
+          title="Karta som visar Café Ljus i Stockholm"
+          src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d8386.909873613315!2d18.0686!3d59.3293!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ssv!2sse!4v1693934519937!5m2!1ssv!2sse"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </section>
 
   </main>
 
+  <!-- ===== Footer ===== -->
   <footer class="site-footer">
-    <div class="wrap">
-      <p>&copy; <span id="year"></span> Café Sol (fiktivt).</p>
-      <nav aria-label="Sidfotslänkar">
-        <ul class="foot" role="list">
-          <li><a href="#feedback">Kontakta oss (feedback)</a></li>
-          <li><a href="#">Sekretesspolicy</a></li>
-        </ul>
-      </nav>
+    <div class="wrap footer-content">
+      <p>&copy; <span id="year"></span> Café Ljus</p>
+      <p>Email: info@cafe-ljus.se | Telefon: 015-3549078</p>
+      <p>
+        <a href="#about">Om oss</a> |
+        <a href="#contact">Kontakta oss</a> |
+        <a href="#booking">Bokningar</a>
+      </p>
     </div>
   </footer>
 

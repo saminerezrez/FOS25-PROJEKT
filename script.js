@@ -1,201 +1,191 @@
-// ===== Helpers =====
+// för tabs menu 
 const qs  = (s, root = document) => root.querySelector(s);
-const qsa = (s, root = document) => [...root.querySelectorAll(s)];
+const qsa = (s, root = document) => Array.from(root.querySelectorAll(s));
 
-// År i footer
-const yr = document.getElementById('year');
-if (yr) yr.textContent = new Date().getFullYear();
+/* =========================
+   Bookning
+   ========================= */
+const BOOK_KEY = 'cafe.booking.v1';
 
-
-function $(sel) {
-  return document.querySelector(sel);
+// läser
+function getBookings() {
+  const raw = localStorage.getItem(BOOK_KEY);
+  return raw ? JSON.parse(raw) : [];
+}
+// sparar bokningar
+function setBookings(list) {
+  localStorage.setItem(BOOK_KEY, JSON.stringify(list));
 }
 
-const storeKey = 'cafe.booking.simple';
-
-function load() {
-  const saved = localStorage.getItem(storeKey);
-  if (saved) {
-    return JSON.parse(saved);
-  } else {
-    return [];
-  }
-}
-
-function save(list) {
-  localStorage.setItem(storeKey, JSON.stringify(list));
-}
-
-function showList(day) {
+// (YYYY-MM-DD) och hittar listan 
+function renderBookings(day) {
   const ul = document.getElementById('bList');
+  if (!ul || !day) return;
   ul.innerHTML = '';
-  if (!day) return;
-
-  const all = load();
-  for (let i = 0; i < all.length; i++) {
-    const b = all[i];
-    if (b.date === day) {
-      const li = document.createElement('li');
-      li.textContent =
-        b.time + ' — ' + b.name + ' (' + b.party + ') ' + b.phone + ' | ' + b.email;
-      ul.appendChild(li);
-    }
-  }
-}
-
-document.getElementById('bDate').addEventListener('change', function (e) {
-  showList(e.target.value);
-});
-
-document.getElementById('bForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-
-  const date = $('#bDate').value;
-  const time = $('#bTime').value;
-  const name = $('#bName').value.trim();
-  const phone = $('#bPhone').value.trim();
-  const email = $('#bEmail').value.trim();
-  const party = parseInt($('#bParty').value) || 1;
-
-  if (!date || !time || !name || !phone || !email) {
-    alert('Fyll i alla fält.');  
-    return;
-  }
-
-  const all = load();
-  all.push({
-    date: date,
-    time: time,
-    name: name,
-    phone: phone,
-    email: email,
-    party: party,
-    createdAt: Date.now()
+// hämtar alla sparade bokningar håller de som matchar
+  const items = getBookings().filter(b => b.date === day);
+  items.forEach(b => {
+    const li = document.createElement('li');
+    li.textContent = `${b.time} — ${b.name} (${b.party}) ${b.phone} | ${b.email}`;
+    ul.appendChild(li);
   });
+}
+// väntar till hela sidan har laddats inna koden körs
+document.addEventListener('DOMContentLoaded', () => {
+  const form  = document.getElementById('bForm');
+  const dateI = document.getElementById('bDate');
+  const msgEl = document.getElementById('bMsg');
+//hittar
+  if (form && dateI) {
+    //skapar dagens datum i format
+    const today = new Date().toISOString().slice(0,10);
+    dateI.value = dateI.value || today;
+    renderBookings(dateI.value);
 
-  save(all);
-  showList(date);
-  e.target.reset();
-  $('#bDate').value = date;
-});
+    // ändra dagen 
+    dateI.addEventListener('change', () => renderBookings(dateI.value));
 
-window.addEventListener('load', function () {
-  const today = new Date().toISOString().slice(0, 10);
-  $('#bDate').value = today;
-  showList(today);
-});
+    // läga till dagen 
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
 
+      const data = {
+        date:  qs('#bDate').value,
+        time:  qs('#bTime').value,
+        name:  qs('#bName').value.trim(),
+        phone: qs('#bPhone').value.trim(),
+        email: qs('#bEmail').value.trim(),
+        party: parseInt(qs('#bParty').value, 10) || 1,
+        createdAt: Date.now()
+      };
 
-// ===== Quotes (20 random) =====
-const text = document.querySelector('#quoteText');
-const author = document.querySelector('#quoteAuthor');
-const btn = document.querySelector('#nextQuote');
+      // validera
+      if (!data.date || !data.time || !data.name || !data.phone || !data.email) {
+        if (msgEl) msgEl.textContent = 'Fyll i alla fält.';
+        return;
+      }
 
-let quotes = [];  
+      const list = getBookings();
+      list.push(data);
+      setBookings(list);
 
-function loadQuotes() {
-  fetch('https://dummyjson.com/quotes?limit=20')
-    .then(res => res.json())
-    .then(data => {
-      quotes = data.quotes;
-      showQuote();
-    })
-    .catch(() => {
-      text.textContent = "Kunde inte hämta citat.";
-      author.textContent = "";
+      renderBookings(data.date);
+      form.reset();
+      qs('#bDate').value = data.date; // keep day
+      if (msgEl) msgEl.textContent = 'Bokningen sparades.';
     });
-}
+  }
+});
 
-function showQuote() {
-  if (quotes.length === 0) return;
-  const q = quotes[Math.floor(Math.random() * quotes.length)];
-  text.textContent = q.quote;
-  author.textContent = `~ ${q.author}`;
-}
+/* =========================
+   Feedback delen
+   ========================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('fbForm');
+  const nameInput = document.getElementById('fbName');
+  const msgInput  = document.getElementById('fbMsg');
+  const list = document.getElementById('fbList');
+  const FB_KEY = 'feedback';
 
-btn.addEventListener('click', showQuote);
-loadQuotes();
+  if (!form || !nameInput || !msgInput || !list) return;
 
+  // localStorage
+  function getFeedback() {
+    const saved = localStorage.getItem(FB_KEY);
+    return saved ? JSON.parse(saved) : [];
+  }
+  function setFeedback(data) {
+    localStorage.setItem(FB_KEY, JSON.stringify(data));
+  }
 
-// ===== Feedback =====
-const form = document.querySelector('#fbForm');
-const nameIn = document.querySelector('#fbName');
-const msgIn = document.querySelector('#fbMsg');
-const list = document.querySelector('#fbList');
-let feedback = JSON.parse(localStorage.getItem('feedback') || '[]');
+  // render list
+  function showFeedback() {
+    const data = getFeedback();
+    list.innerHTML = '';
+    data.forEach(f => {
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${f.name}</strong>: ${f.message}`;
+      list.appendChild(li);
+    });
+  }
 
-function showFeedback() {
-  list.innerHTML = feedback.map(f => `<li><b>${f.name}</b>: ${f.message}</li>`).join('');
-}
-showFeedback();
-
-form.addEventListener('submit', e => {
-  e.preventDefault();
-  const name = nameIn.value.trim();
-  const msg  = msgIn.value.trim();
-  if (name.length < 2 || msg.length < 2) return alert('Skriv något längre!');
-  feedback.push({ name, message: msg });
-  localStorage.setItem('feedback', JSON.stringify(feedback));
+  
   showFeedback();
-  form.reset();
+
+  // lägga till en nytt
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    const msg = msgInput.value.trim();
+
+    if (name.length < 2 || msg.length < 2) {
+      
+      alert('Skriv lite längre tack.'); 
+      return;
+    }
+
+    const data = getFeedback();
+    data.push({ name, message: msg });
+    setFeedback(data);
+
+    showFeedback();
+    form.reset();
+  });
 });
 
+/* =========================
+   väder
+   ========================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('loadWeather');
+  const out = document.getElementById('weatherOut');
+  if (!btn || !out) return;
 
-// ===== Weather =====
-const btnWeather = document.querySelector('#loadWeather');
-const outWeather = document.querySelector('#weatherOut');
+  btn.addEventListener('click', () => {
+    out.textContent = 'Hämtar väder...';
 
-btnWeather.addEventListener('click', () => {
-  outWeather.textContent = "Hämtar väder...";
-
-  fetch("https://api.open-meteo.com/v1/forecast?latitude=59.3293&longitude=18.0686&current=temperature_2m,wind_speed_10m&timezone=auto")
-    .then(res => res.json())
-    .then(data => {
-      const temp = data.current.temperature_2m;
-      const wind = data.current.wind_speed_10m;
-      outWeather.textContent = `Just nu: ${temp} °C, vind ${wind} m/s`;
-    })
-    .catch(() => {
-      outWeather.textContent = "Kunde inte hämta väder just nu.";
-    });
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=59.3293&longitude=18.0686&current=temperature_2m,wind_speed_10m&timezone=auto')
+      .then(res => res.json())
+      .then(data => {
+        const temp = data.current?.temperature_2m ?? '–';
+        const wind = data.current?.wind_speed_10m ?? '–';
+        out.textContent = `Just nu: ${temp} °C, vind ${wind} m/s`;
+      })
+      .catch(() => {
+        out.textContent = 'Kunde inte hämta väder just nu.';
+      });
+  });
 });
 
-/* =============================
-   Tabs
-============= */
-(function tabs(){
+/* =========================
+   Tabs för meny delen 
+   ========================= */
+document.addEventListener('DOMContentLoaded', () => {
   const tabs = qsa('.menu-nav__link');
   const byId = id => document.getElementById(id);
-  if(!tabs.length) return;
+  if (!tabs.length) return;
 
-  const KEY = 'cafe.activeTab';
-
-  function activate(btn) {
+  function activate(tab){
     tabs.forEach(t => {
-      const selected = (t === btn);
+      const selected = (t === tab);
       t.setAttribute('aria-selected', String(selected));
       t.classList.toggle('is-active', selected);
       const panel = byId(t.getAttribute('aria-controls'));
       if (panel) panel.hidden = !selected;
     });
-    localStorage.setItem(KEY, btn.id);
-    btn.focus();
+    tab.focus();
   }
 
   tabs.forEach(t => {
     t.addEventListener('click', () => activate(t));
     t.addEventListener('keydown', (e) => {
-      const i = tabs.findIndex(x => x === t);
-      let target;
-      if (e.key === 'ArrowRight')      target = tabs[(i + 1) % tabs.length];
-      else if (e.key === 'ArrowLeft')  target = tabs[(i - 1 + tabs.length) % tabs.length];
-      else if (e.key === 'Home')       target = tabs[0];
-      else if (e.key === 'End')        target = tabs[tabs.length - 1];
-      if (target) { e.preventDefault(); activate(target); }
+      const arr = tabs;
+      const i = arr.indexOf(t);
+      if (e.key === 'ArrowRight') activate(arr[(i + 1) % arr.length]);
+      if (e.key === 'ArrowLeft')  activate(arr[(i - 1 + arr.length) % arr.length]);
     });
   });
 
-  const saved = localStorage.getItem(KEY);
-  const initial = saved ? byId(saved) : tabs[0];
-  if (initial) activate(initial);
-})();
+  
+  activate(tabs[0]);
+});

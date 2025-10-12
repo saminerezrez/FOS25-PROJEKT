@@ -5,12 +5,29 @@
   padding: 0;
 }
 
+
+
+
+
 body {
   font-family: Arial, sans-serif;
   color: #222;
   background: #f3f4f6;
   line-height: 1.5;
+  
+
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; 
 }
+
+
+main{
+  flex: 1; 
+
+}
+
 
 a {
   color: brown;
@@ -66,17 +83,28 @@ button:focus {
  background: #fff; 
  border-bottom: 1px solid #e5e7eb;
  }
-.site-footer { border-top: 1px solid #e5e7eb; border-bottom: 0; }
+
+  .site-footer {
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 0;
+    background:  #f7b681; ;; /* samma som body */
+    color: #222;          /* mörk text för kontrast */
+    width: 100%;
+    text-align: center;
+    padding: 24px 16px;
+  }
+  .footer-content a { color: brown; text-decoration: underline; }
+  
+
+
+
 #site-title { margin: 0; font-size: 1.75rem; }
 
 .nav { list-style: none; padding: 0; margin: .5rem 0 0; display: flex; gap: 1rem; flex-wrap: wrap; }
 .nav a { color: #1f2937; font-weight: 600; }
 
 /* Footer with safe contrast */
-footer {
-  background: saddlebrown; color: #fff; text-align: center; width: 100%;
-  padding: 24px 16px; margin-top: 40px;
-}
+
 .footer-content { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .footer-content a { color: #fff; text-decoration: underline; }
 
